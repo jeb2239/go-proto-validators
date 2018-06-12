@@ -60,7 +60,7 @@ import (
 	descriptor "github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"github.com/gogo/protobuf/protoc-gen-gogo/generator"
 	"github.com/gogo/protobuf/vanity"
-	"github.com/mwitkow/go-proto-validators"
+	"github.com/jeb2239/go-proto-validators"
 )
 
 type plugin struct {
@@ -92,7 +92,7 @@ func (p *plugin) Generate(file *generator.FileDescriptor) {
 	p.PluginImports = generator.NewPluginImports(p.Generator)
 	p.regexPkg = p.NewImport("regexp")
 	p.fmtPkg = p.NewImport("fmt")
-	p.validatorPkg = p.NewImport("github.com/mwitkow/go-proto-validators")
+	p.validatorPkg = p.NewImport("github.com/jeb2239/go-proto-validators")
 
 	for _, msg := range file.Messages() {
 		if msg.DescriptorProto.GetOptions().GetMapEntry() {
@@ -155,11 +155,13 @@ func (p *plugin) generateRegexVars(file *generator.FileDescriptor, message *gene
 
 func (p *plugin) generateProto2Message(file *generator.FileDescriptor, message *generator.Descriptor) {
 	ccTypeName := generator.CamelCaseSlice(message.TypeName())
-
+	fmt.Fprintf(os.Stderr, "number of foo: %d\n", 3)
 	p.P(`func (this *`, ccTypeName, `) Validate() error {`)
 	p.In()
 	for _, field := range message.Field {
 		fieldName := p.GetFieldName(message, field)
+		fieldType := field.GetType()
+		fmt.Fprintln(os.Stderr, "FieldName :%s,%s", fieldName,fieldType)
 		fieldValidator := getFieldValidatorIfAny(field)
 		if fieldValidator == nil && !field.IsMessage() {
 			continue
@@ -235,6 +237,7 @@ func (p *plugin) generateProto2Message(file *generator.FileDescriptor, message *
 }
 
 func (p *plugin) generateProto3Message(file *generator.FileDescriptor, message *generator.Descriptor) {
+
 	ccTypeName := generator.CamelCaseSlice(message.TypeName())
 	p.P(`func (this *`, ccTypeName, `) Validate() error {`)
 	p.In()

@@ -17,7 +17,7 @@ package validator_examples
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "github.com/mwitkow/go-proto-validators"
+import _ "github.com/jeb2239/go-proto-validators"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
